@@ -1,4 +1,5 @@
 <?php
+session_start();
 include '../../SQL/config.php';
 require_once '../Laboratory and Diagnostic Management/test_class.php';
 
@@ -25,68 +26,6 @@ if (!$user) {
     exit();
 }
 
-//main content
-$labdiagnostic_tests = new labdiagnostic_tests($conn);
-
-// Handle form submission
-$message = '';
-$error = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['create'])) {
-
-        $labdiagnostic_tests->test_code = $_POST['test_code'];
-        $labdiagnostic_tests->test_name = $_POST['test_name'];
-        $labdiagnostic_tests->description = $_POST['description'];
-        $labdiagnostic_tests->category = $_POST['category'];
-        $labdiagnostic_tests->preparation_instructions = $_POST['preparation_instructions'];
-        $labdiagnostic_tests->estimated_duration = $_POST['estimated_duration'];
-        $labdiagnostic_tests->is_active = isset($_POST['is_active']) ? 1 : 0;
-
-        if ($labdiagnostic_tests->create()) {
-            $message = "Test created successfully.";
-        } else {
-            $error = "Unable to create test.";
-        }
-
-    } elseif (isset($_POST['update'])) {
-
-        $labdiagnostic_tests->test_id = $_POST['test_id'];
-        $labdiagnostic_tests->test_code = $_POST['test_code'];
-        $labdiagnostic_tests->test_name = $_POST['test_name'];
-        $labdiagnostic_tests->description = $_POST['description'];
-        $labdiagnostic_tests->category = $_POST['category'];
-        $labdiagnostic_tests->preparation_instructions = $_POST['preparation_instructions'];
-        $labdiagnostic_tests->estimated_duration = $_POST['estimated_duration'];
-        $labdiagnostic_tests->is_active = isset($_POST['is_active']) ? 1 : 0;
-
-        if ($labdiagnostic_tests->update()) {
-            $message = "Test updated successfully.";
-        } else {
-            $error = "Unable to update test.";
-        }
-
-    } elseif (isset($_POST['delete'])) {
-
-        $labdiagnostic_tests->test_id = $_POST['test_id'];
-
-        if ($labdiagnostic_tests->delete()) {
-            $message = "Test deleted successfully.";
-        } else {
-            $error = "Unable to delete test.";
-        }
-    }
-}
-
-// Get all tests
-$result = $labdiagnostic_tests->getAll();
-$labdiagnostic_tests = [];
-
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        $labdiagnostic_tests[] = $row;
-    }
-}
 
 ?>
 
@@ -101,7 +40,6 @@ if ($result) {
     <link rel="shortcut icon" href="assets/image/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="assets/CSS/bootstrap.min.css">
     <link rel="stylesheet" href="assets/CSS/super.css">
-    <link rel="stylesheet" href="assets/CSS/labtestform.css">
 </head>
 <style>
     </style>
@@ -140,23 +78,87 @@ if ($result) {
                         <path
                             d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm11 0H3v14h3v-2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V15h3z" />
                     </svg>
-                    <span style="font-size: 18px;">Laboratory and Diagnostic Management</span>
+                    <span style="font-size: 18px;">Test Booking and Scheduling</span>
                 </a>
 
                 <ul id="labtech" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link">Test Available</a>
+                        <a href="../Laboratory and Diagnostic Management/test.php" class="sidebar-link">Test Available</a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="../Laboratory and Diagnostic Management/appointment.php" class="sidebar-link">Appointment</a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a href="payroll.php" class="sidebar-link">Payroll</a>
+                        <a href="../Laboratory and Diagnostic Management/labtechm1.php/appointment.php" class="sidebar-link">Appointment</a>
                     </li>
                 </ul>
             </li>
-        </aside>
-        <!----- End of Sidebar ----->
+
+<!-- Module 2: Sample Collection & Tracking -->
+<li class="sidebar-item">
+    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse" data-bs-target="#sample"
+        aria-expanded="true" aria-controls="auth">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-collection" viewBox="0 0 16 16">
+            <path d="M2.5 3.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-11zm2-2a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zM0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6v7zm1.5.5A.5.5 0 0 1 1 13V6a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13z"/>
+        </svg>
+        <span style="font-size: 18px;">Sample Collection & Tracking</span>
+    </a>
+    <ul id="sample" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+        <li class="sidebar-item">
+            <a href="../Sample/collection_log.php" class="sidebar-link">Collection Log</a>
+        </li>
+        <li class="sidebar-item">
+            <a href="../Sample/sample_tracking.php" class="sidebar-link">Sample Tracking</a>
+        </li>
+        <li class="sidebar-item">
+            <a href="../Sample/collection_team.php" class="sidebar-link">Collection Team</a>
+        </li>
+    </ul>
+</li>
+
+<!-- Module 3: Report Generation & Delivery -->
+<li class="sidebar-item">
+    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse" data-bs-target="#report"
+        aria-expanded="true" aria-controls="auth">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
+            <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
+            <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+        </svg>
+        <span style="font-size: 18px;">Report Generation & Delivery</span>
+    </a>
+    <ul id="report" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+        <li class="sidebar-item">
+            <a href="../Laboratory and Diagnostic Management/labtechm3.php/test_results.php" class="sidebar-link">Test Results</a>
+        </li>
+        <li class="sidebar-item">
+            <a href="../Laboratory and Diagnostic Management/labtechm3.php/result_items.php" class="sidebar-link">Result Items</a>
+        </li>
+        <li class="sidebar-item">
+            <a href="../Laboratory and Diagnostic Management/labtechm3.php/report_deliveries.php" class="sidebar-link">Delivery Methods</a>
+        </li>
+    </ul>
+</li>
+
+<!-- Module 4: Equipment Maintenance -->
+<li class="sidebar-item">
+    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse" data-bs-target="#equipment"
+        aria-expanded="true" aria-controls="auth">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-tools" viewBox="0 0 16 16">
+            <path d="M1 0 0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.27 3.27a.997.997 0 0 0 1.414 0l1.586-1.586a.997.997 0 0 0 0-1.414l-3.27-3.27a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3c0-.269-.035-.53-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814L1 0Zm9.646 10.646a.5.5 0 0 1 .708 0l2.914 2.915a.5.5 0 0 1-.707.707l-2.915-2.914a.5.5 0 0 1 0-.708ZM3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026L3 11Z"/>
+        </svg>
+        <span style="font-size: 18px;">Equipment Maintenance</span>
+    </a>
+    <ul id="equipment" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+        <li class="sidebar-item">
+            <a href="../Equipment/equipment_list.php" class="sidebar-link">Equipment Inventory</a>
+        </li>
+        <li class="sidebar-item">
+            <a href="../Equipment/maintenance_schedule.php" class="sidebar-link">Maintenance Schedule</a>
+        </li>
+        <li class="sidebar-item">
+            <a href="../Equipment/service_log.php" class="sidebar-link">Service Log</a>
+        </li>
+    </ul>
+</li>
+</aside>
+<!----- End of Sidebar ----->
         <!----- Main Content ----->
         <div class="main">
             <div class="topbar">
@@ -190,242 +192,10 @@ if ($result) {
                 </div>
             </div>
             <!-- START CODING HERE -->
+             
+            <h1>wala pa here</h1>
 
-    <div class="container">
-
-        <?php if (!empty($message)): ?>
-            <div class="alert success"><?php echo $message; ?></div>
-        <?php endif; ?>
-        
-        <?php if (!empty($error)): ?>
-            <div class="alert error"><?php echo $error; ?></div>
-        <?php endif; ?>
-        
-    <div class="card">
-      <h3>Add New Test</h3>
-        <form id="testForm" method="POST">
-            <input type="hidden" id="test_id" name="test_id"><!--auto-->
-                
-        <div class="form-group">
-            <label for="test_code">Test Code:</label>
-            <input type="text" id="test_code" name="test_code">
-        </div>
-
-        <div class="form-group">
-             <label for="test_name">Test Name:</label>
-             <input type="text" id="test_name" name="test_name">
-        </div>
-                   
-        <div class="form-group">
-              <label for="description">Description:</label>
-              <input type="text" id="description" name="description">
-        </div>
-                
-        <div class="form-group">
-              <label for="category">Category:</label>
-              <input type="text" id="category" name="category">
-        </div>
-                
-        <div class="form-group">
-               <label for="preparation_instructions">Preparation Instructions:</label>
-               <input type="text" id="preparation_instructions" name="preparation_instructions">
-                
-        <div class="form-group">
-               <label for="estimated_duration">Estimated Duration (minutes):</label>
-               <input type="number" id="estimated_duration" name="estimated_duration" min="15">
-        </div>
-                
-        <div class="form-group checkbox">
-               <input type="checkbox" id="is_active" name="is_active" checked>
-               <label for="is_active">Active</label>
-        </div>
-                
-        <div class="form-buttons">
-                <button type="submit" name="create" id="createBtn">Create Test</button>
-                <button type="submit" name="update" id="updateBtn" style="display: none;">Update Test</button>
-                <button type="button" id="cancelBtn" style="display: none;">Cancel</button>
-        </div>
-    </form>
-  </div>
-        
-        <div class="card">
-            <h2>Test List</h2>
-            <div class="table-responsive">
-                <table id="testsTable">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>CODE</th>
-                            <th>NAME</th>
-                            <th>CATEGORY</th>
-                            <th>DURATION</th>
-                            <th>STATUS</th>
-                            <th>ACTIONS</th>
-                        </tr>
-                   <tbody>
-                        <?php foreach ($labdiagnostic_tests as $row): ?>
-                            <tr>
-                                <td><?php echo $row['test_id']; ?></td>
-                                <td><?php echo $row['test_code']; ?></td>
-                                <td><?php echo $row['test_name']; ?></td>
-                                <td><?php echo $row['category']; ?></td>
-                                <td><?php echo $row['estimated_duration']; ?></td>
-                                <td><?php echo $row['is_active'] ? 'Active' : 'Inactive'; ?></td>
-                                <td>
-                                <button class="btn-view" data-id="<?php echo $row['test_id']; ?>">View</button>
-                                <button class="btn-edit" data-id="<?php echo $row['test_id']; ?>">Edit</button>
-                                    <form method="POST" style="display: inline;">
-                                        <input type="hidden" name="test_id" value="<?php echo $row['test_id']; ?>">
-                                        <button type="submit" name="delete" class="btn-delete" onclick="return confirm('Are you sure you want to delete this test?')">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    
-   <!-- Modal for viewing test details -->
-<div id="testModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Test Details</h2>
-        <div id="testDetails">
-            <!-- Details will be loaded here -->
-        </div>
-    </div>
-</div>
-</div>
-<script>
-    // JavaScript for handling edit functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const editButtons = document.querySelectorAll('.btn-edit');
-        const viewButtons = document.querySelectorAll('.btn-view');
-        const testForm = document.getElementById('testForm');
-        const createBtn = document.getElementById('createBtn');
-        const updateBtn = document.getElementById('updateBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const modal = document.getElementById('testModal');
-        const closeBtn = document.querySelector('.close');
-        
-        // Add event listeners to all edit buttons
-        editButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const testId = this.getAttribute('data-id');
-                fetchTestDetails(testId, 'edit');
-            });
-        });
-
-        // Add event listeners to all view buttons
-        viewButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const testId = this.getAttribute('data-id');
-                fetchTestDetails(testId, 'view');
-            });
-        });
-        
-        // Close modal when clicking X
-        closeBtn.addEventListener('click', function() {
-            modal.style.display = 'none';
-        });
-        
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        });
-        
-        // Cancel button functionality
-        cancelBtn.addEventListener('click', function() {
-            resetForm();
-        });
-        
-        // Function to fetch test details for editing or viewing
-        function fetchTestDetails(testId, mode) {
-            // Using to get test details
-            fetch(`get_test.php?id=${testId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data) {
-                        if (mode === 'edit') {
-                            // Populate form with test details for editing
-                            document.getElementById('test_id').value = data.test_id;
-                            document.getElementById('test_code').value = data.test_code;
-                            document.getElementById('test_name').value = data.test_name;
-                            document.getElementById('description').value = data.description;
-                            document.getElementById('category').value = data.category;
-                            document.getElementById('preparation_instructions').value = data.preparation_instructions;
-                            document.getElementById('estimated_duration').value = data.estimated_duration;
-                            document.getElementById('is_active').checked = data.is_active == 1;
-                            
-                            // Show update and cancel buttons, hide create button
-                            createBtn.style.display = 'none';
-                            updateBtn.style.display = 'inline-block';
-                            cancelBtn.style.display = 'inline-block';
-                            
-                            // Scroll to form
-                            testForm.scrollIntoView({ behavior: 'smooth' });
-                        } else if (mode === 'view') {
-                            // Display details in modal for viewing
-                            const detailsDiv = document.getElementById('testDetails');
-                            detailsDiv.innerHTML = `
-                                <div class="detail-row">
-                                    <span class="detail-label">Test ID:</span>
-                                    <span>${data.test_id}</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Test Code:</span>
-                                    <span>${data.test_code}</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Test Name:</span>
-                                    <span>${data.test_name}</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Description:</span>
-                                    <span>${data.description || 'N/A'}</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Category:</span>
-                                    <span>${data.category}</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Preparation Instructions:</span>
-                                    <span>${data.preparation_instructions || 'N/A'}</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Estimated Duration:</span>
-                                    <span>${data.estimated_duration} minutes</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Status:</span>
-                                    <span>${data.is_active ? 'Active' : 'Inactive'}</span>
-                                </div>
-                            `;
-                            modal.style.display = 'block';
-                        }
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching test details:', error);
-                    alert('Failed to load test details. Please try again.');
-                });
-        }
-        
-        // Function to reset form to create mode
-        function resetForm() {
-            testForm.reset();
-            document.getElementById('test_id').value = '';
-            createBtn.style.display = 'inline-block';
-            updateBtn.style.display = 'none';
-            cancelBtn.style.display = 'none';
-        }
-    });
-</script>
-
+ 
         <!----- End of Main Content ----->
    
     <script>

@@ -1,7 +1,5 @@
 <?php
-
 session_start();
-
 // Include database connection and class
 include '../../SQL/config.php';
 require_once '../Laboratory and Diagnostic Management/test_class.php';

@@ -131,7 +131,7 @@ class labdiagnostic_tests {
             $stmt2->bind_param("i", $this->test_id);
 
             return $stmt2->execute();
-        } catch (Exception $e) {
+        }   catch (Exception $e) {
             error_log("MySQLi Error (delete): " . $e->getMessage());
             return false;
         }
