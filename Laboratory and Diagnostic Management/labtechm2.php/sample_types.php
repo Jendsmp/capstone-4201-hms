@@ -1,8 +1,7 @@
 <?php
 session_start();
 include '../../../SQL/config.php';
-require_once 'resultitems_class.php';
-require_once 'testresult_class.php';
+
 
 
 //log in 
@@ -43,17 +42,6 @@ if (!$user) {
     <link rel="stylesheet" href="../assets/CSS/labtestform.css">
 </head>
 <style>
-
- .header-info {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        
-        .header-info p {
-            margin-bottom: 5px;
-        }
     </style>
 <body>
     <div class="d-flex">
@@ -204,6 +192,10 @@ if (!$user) {
                 </div>
             </div>
             <!-- START CODING HERE -->
+             <div class="container">
+                <h1>Sample Types</h1>
+
+
            
 
         <!----- End of Main Content ----->

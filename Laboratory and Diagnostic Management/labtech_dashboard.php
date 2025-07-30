@@ -102,7 +102,7 @@ if (!$user) {
     </a>
     <ul id="sample" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
         <li class="sidebar-item">
-            <a href="../Sample/collection_log.php" class="sidebar-link">Collection Log</a>
+            <a href="../Laboratory and Diagnostic Management/labtechm2.php/sample_types.php" class="sidebar-link">Sample Types</a>
         </li>
         <li class="sidebar-item">
             <a href="../Sample/sample_tracking.php" class="sidebar-link">Sample Tracking</a>
